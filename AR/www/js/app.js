@@ -21,7 +21,7 @@ angular.module('starter', ['ionic'])
       StatusBar.styleDefault();
     }
 
-  socket = new WebSocket("ws://192.168.1.5:8080/");
+  socket = new WebSocket("ws://54.250.246.57:8080/");
   text = $('.inner_text');
 
 

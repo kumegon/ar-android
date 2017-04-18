@@ -38,7 +38,7 @@ model_filename = './fine.hdf5'
 
 
 #IP = '54.199.224.250'
-IP = '192.168.1.5'
+IP = '54.250.246.57'
 
 #WebSocketがListenするポートを指定
 define("port", default = 8080,type = int)
