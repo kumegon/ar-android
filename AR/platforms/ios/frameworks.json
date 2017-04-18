@@ -1,3 +1,11 @@
 {
-    "libz.tbd": 1
+    "libz.tbd": 1,
+    "ImageIO.framework": 1,
+    "CoreLocation.framework": 1,
+    "CoreImage.framework": 1,
+    "OpenGLES.framework": 1,
+    "GLKit.framework": 1,
+    "CoreVideo.framework": 1,
+    "QuartzCore.framework": 1,
+    "AVFoundation.framework": 1
 }

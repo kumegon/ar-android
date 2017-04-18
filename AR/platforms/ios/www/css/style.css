@@ -1,1 +1,8 @@
 /* Empty. Add your own CSS if you like */
+html, body, .ion-app, .ion-content {
+  background-color: transparent;
+}
+
+.controls{
+  padding-top: 50px;
+}

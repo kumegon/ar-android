@@ -20,5 +20,121 @@ angular.module('starter', ['ionic'])
     if(window.StatusBar) {
       StatusBar.styleDefault();
     }
+
+  socket = new WebSocket("ws://192.168.1.5:8080/");
+  text = $('.inner_text');
+
+
+
+
+  socket.onopen = function(e) {
+    alert('server connect');
+  }
+
+  socket.onclose = function(e) {
+    alert('server close');
+  }
+
+  socket.onerror = function(e) {
+    alert('occured error');
+  }
+
+  socket.onmessage = function(e) {
+      var result = e.data;
+      console.log(e.data)
+      text.text(result);
+  }
+
+
+  function getVideoSources(callback) {
+    if (!navigator.mediaDevices) {
+      console.log("MediaStreamTrack");
+      MediaStreamTrack.getSources(function(cams) {
+        cams.forEach(function(c, i, a) {
+          if (c.kind != 'video') return;
+          callback({
+            name: c.facing,
+            id: c.id
+          });
+        });
+      });
+    } else {
+      navigator.mediaDevices.enumerateDevices().then(function(cams) {
+        cams.forEach(function(c, i, a) {
+          console.log("mediaDevices", c);
+          if (c.kind != 'videoinput') return;
+          callback({
+            name: c.label,
+            id: c.deviceId
+          });
+        });
+      });
+    }
+  }
+
+
+    var video = document.querySelector('video');
+    var canvas = document.querySelector('canvas');
+    var ctx = canvas.getContext('2d');
+    var localMediaStream = null;
+    var control = document.getElementById("buttons");
+
+
+    //カメラ画像キャプチャ
+    snapshot = function() {
+      if (localMediaStream) {
+        ctx.drawImage(video, 0, 0);
+        image = canvas.toDataURL('image/jpeg');
+        base64 = image.split(',')[1];
+        socket.send(base64);
+        //console.log(base64)
+      }
+    }
+
+
+
+
+    getVideoSources(function(cam) {
+      console.log("cam", cam);
+      var b = document.createElement("input");
+      b.type = "button";
+      b.value = 'button';
+      b.onclick = getMain(cam.id);
+      control.appendChild(b);
+    });
+
+
+    function getMain(cam_id) {
+      return function() {
+        main(cam_id);
+      };
+    }
+
+    function main(cam_id) {
+      navigator.getUserMedia({
+        video: {
+          optional: [
+            { sourceId: cam_id}
+          ]
+        }
+      }, function(stream) { // success
+        localMediaStream = stream;
+        video.src = window.URL.createObjectURL(stream);
+        $('.inner_text').css('display','block');
+      }, function(e) { // error
+      });
+    };
+
+    setInterval('snapshot()', 1000);
+    var permissions = cordova.plugins.permissions;
+    // カメラの場合
+    permissions.requestPermission(permissions.CAMERA, function(status) {
+      alert(status.hasPermission); // true or false
+    }, null);
   });
 })
+
+
+
+
+
