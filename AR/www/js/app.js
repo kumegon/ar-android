@@ -21,22 +21,23 @@ angular.module('starter', ['ionic'])
       StatusBar.styleDefault();
     }
 
-  socket = new WebSocket("ws://54.250.246.57:8080/");
+  socket = new WebSocket("ws://54.250.246.57:80/");
+  console.log(socket);
   text = $('.inner_text');
 
 
 
 
   socket.onopen = function(e) {
-    alert('server connect');
+    console.log('server connect');
   }
 
   socket.onclose = function(e) {
-    alert('server close');
+    console.log('server close');
   }
 
   socket.onerror = function(e) {
-    alert('occured error');
+    console.log('occured error');
   }
 
   socket.onmessage = function(e) {

@@ -41,7 +41,7 @@ model_filename = './fine.hdf5'
 IP = '54.250.246.57'
 
 #WebSocketがListenするポートを指定
-define("port", default = 8080,type = int)
+define("port", default = 80,type = int)
 
 class SendWebSocket(tornado.websocket.WebSocketHandler):
 
