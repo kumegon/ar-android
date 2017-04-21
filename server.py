@@ -60,10 +60,13 @@ class SendWebSocket(tornado.websocket.WebSocketHandler):
     #クライアントからメッセージが送られてくると呼び出されるイベント
     def on_message(self, message):
       try:
-        im = img_to_array(Image.open(BytesIO(base64.b64decode(message))).resize((IMAGE_SIZE,IMAGE_SIZE)))/255
+        im = img_to_array(Image.open(BytesIO(base64.b64decode(message))).resize((IMAGE_SIZE,IMAGE_SIZE)))
         input_image = np.expand_dims(im,axis=0)
-        result = model.predict(input_image, verbose=1)
-        self.write_message(items[result] +  decode_predictions(preds, top=3)[0])
+        input_image = preprocess_input(input_image)
+
+        preds = model.predict(input_image)
+        self.write_message('Predicted:', decode_predictions(preds, top=3)[0])
+
       except:
         self.write_message("エラー")
 
@@ -73,10 +76,10 @@ class SendWebSocket(tornado.websocket.WebSocketHandler):
 
 
 
-'''
 old_session = KTF.get_session()
 
 
+'''
 with tf.Graph().as_default():
     session = tf.Session('')
     KTF.set_session(session)
@@ -84,10 +87,11 @@ with tf.Graph().as_default():
     json_string = open(model_filename).read()
     model = load_model(model_filename)
 
+
     model.summary()
     input_image = np.expand_dims(img_to_array(load_img('0000.jpg', target_size=(IMAGE_SIZE,IMAGE_SIZE)))/255,axis=0)
     result = np.argmax(model.predict(input_image, verbose=1))
-    '''
+'''
 model = ResNet50(weights='imagenet')
 print('waiting')
 
