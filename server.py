@@ -65,7 +65,9 @@ class SendWebSocket(tornado.websocket.WebSocketHandler):
         input_image = preprocess_input(input_image)
 
         preds = model.predict(input_image)
-        self.write_message('Predicted:', decode_predictions(preds, top=3)[0])
+        results = decode_predictions(preds, top=3)[0]
+        for result in results:
+            self.write_message(result)
 
       except:
         self.write_message("エラー")
