@@ -5,6 +5,9 @@ import tornado.websocket
 from tornado.options import define, options ,parse_command_line
 from datetime import datetime
 import shlex, subprocess , time ,re , json ,threading
+from keras.applications.resnet50 import ResNet50
+from keras.preprocessing import image
+from keras.applications.resnet50 import preprocess_input, decode_predictions
 
 
 
@@ -59,8 +62,8 @@ class SendWebSocket(tornado.websocket.WebSocketHandler):
       try:
         im = img_to_array(Image.open(BytesIO(base64.b64decode(message))).resize((IMAGE_SIZE,IMAGE_SIZE)))/255
         input_image = np.expand_dims(im,axis=0)
-        result = np.argmax(model.predict(input_image, verbose=1))
-        self.write_message(items[result])
+        result = model.predict(input_image, verbose=1)
+        self.write_message(items[result] +  decode_predictions(preds, top=3)[0])
       except:
         self.write_message("エラー")
 
@@ -70,6 +73,7 @@ class SendWebSocket(tornado.websocket.WebSocketHandler):
 
 
 
+'''
 old_session = KTF.get_session()
 
 
@@ -80,25 +84,21 @@ with tf.Graph().as_default():
     json_string = open(model_filename).read()
     model = load_model(model_filename)
 
-
-    model.compile(loss='categorical_crossentropy',
-                  optimizer=optimizers.SGD(lr=1e-4, momentum=0.9),
-                  metrics=['accuracy'])
-    '''
     model.summary()
     input_image = np.expand_dims(img_to_array(load_img('0000.jpg', target_size=(IMAGE_SIZE,IMAGE_SIZE)))/255,axis=0)
     result = np.argmax(model.predict(input_image, verbose=1))
     '''
-    print('waiting')
+model = ResNet50(weights='imagenet')
+print('waiting')
 
-    app = tornado.web.Application([
-      (r"/", SendWebSocket),
-    ])
+app = tornado.web.Application([
+  (r"/", SendWebSocket),
+])
 
-    parse_command_line()
-    app.listen(options.port)
-    mainloop = tornado.ioloop.IOLoop.instance()
-    mainloop.start() #WebSocketServer起動
+parse_command_line()
+app.listen(options.port)
+mainloop = tornado.ioloop.IOLoop.instance()
+mainloop.start() #WebSocketServer起動
 
 
 
