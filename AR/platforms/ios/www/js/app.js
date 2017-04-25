@@ -21,8 +21,9 @@ angular.module('starter', ['ionic'])
       StatusBar.styleDefault();
     }
 
-  socket = new WebSocket("ws://192.168.1.18:8080/");
-  text = $(".result");
+  socket = new WebSocket("ws://54.250.246.57:80/");
+  console.log(socket);
+  text = $('.inner_text');
 
 
 
@@ -42,7 +43,7 @@ angular.module('starter', ['ionic'])
   socket.onmessage = function(e) {
       var result = e.data;
       console.log(e.data)
-      text.val(result);
+      text.text(result);
   }
 
 
@@ -120,16 +121,17 @@ angular.module('starter', ['ionic'])
       }, function(stream) { // success
         localMediaStream = stream;
         video.src = window.URL.createObjectURL(stream);
+        $('.inner_text').css('display','block');
       }, function(e) { // error
       });
     };
 
+    setInterval('snapshot()', 1000);
     var permissions = cordova.plugins.permissions;
     // カメラの場合
     permissions.requestPermission(permissions.CAMERA, function(status) {
       alert(status.hasPermission); // true or false
     }, null);
-    setInterval('snapshot()', 1000);
   });
 })
 

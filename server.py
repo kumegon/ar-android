@@ -40,11 +40,11 @@ IMAGE_PIXELS = IMAGE_SIZE*IMAGE_SIZE*3
 model_filename = './fine.hdf5'
 
 
-#IP = '54.199.224.250'
-IP = '54.250.246.57'
+IP = '192.168.1.15'
+#IP = '54.250.246.57'
 
 #WebSocketがListenするポートを指定
-define("port", default = 80,type = int)
+define("port", default = 8080,type = int)
 
 class SendWebSocket(tornado.websocket.WebSocketHandler):
 
@@ -65,9 +65,9 @@ class SendWebSocket(tornado.websocket.WebSocketHandler):
         input_image = preprocess_input(input_image)
 
         preds = model.predict(input_image)
-        results = decode_predictions(preds, top=3)[0]
-        for result in results:
-            self.write_message(result)
+        results = map(lambda x: x[1],decode_predictions(preds, top=3)[0])
+        print(str(results))
+        self.write_message(str(results))
 
       except:
         self.write_message("エラー")

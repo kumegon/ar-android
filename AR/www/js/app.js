@@ -20,8 +20,9 @@ angular.module('starter', ['ionic'])
     if(window.StatusBar) {
       StatusBar.styleDefault();
     }
-
-  socket = new WebSocket("ws://54.250.246.57:80/");
+    var ip = "ws://192.168.1.15:8080/";
+    //var ip = "ws://54.250.246.57:80/";
+  socket = new WebSocket(ip);
   console.log(socket);
   text = $('.inner_text');
 
