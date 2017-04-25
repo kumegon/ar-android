@@ -20,8 +20,8 @@ angular.module('starter', ['ionic'])
     if(window.StatusBar) {
       StatusBar.styleDefault();
     }
-    var ip = "ws://192.168.1.15:8080/";
-    //var ip = "ws://54.250.246.57:80/";
+    //var ip = "ws://192.168.12.17:8080/";
+    var ip = "ws://54.250.246.57:80/";
   socket = new WebSocket(ip);
   console.log(socket);
   text = $('.inner_text');
@@ -42,9 +42,11 @@ angular.module('starter', ['ionic'])
   }
 
   socket.onmessage = function(e) {
+      var date = new Date() ;
+      recieve_time = date.getTime();
       var result = e.data;
       console.log(e.data)
-      text.text(result);
+      text.text(result+"\n"+String(recieve_time - send_time)+"ms");
   }
 
 
@@ -85,9 +87,12 @@ angular.module('starter', ['ionic'])
     //カメラ画像キャプチャ
     snapshot = function() {
       if (localMediaStream) {
+        var date = new Date() ;
+        send_time = date.getTime();
         ctx.drawImage(video, 0, 0);
         image = canvas.toDataURL('image/jpeg');
         base64 = image.split(',')[1];
+
         socket.send(base64);
         //console.log(base64)
       }
